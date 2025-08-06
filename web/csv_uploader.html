@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload CSV to Lambda</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      background: #fffbe6;
+      color: #665c00;
+      border: 1px solid #ffe58f;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      max-width: 600px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="file"] {
+      padding: 6px;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #444;
+      max-width: 600px;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload your CSV</h1>
+
+  <div class="instructions">
+    <strong>Instructions:</strong><br />
+    Please upload a <code>.csv</code> file with the following column headers:<br />
+    <code>id,date,transaction,email</code><br /><br />
+    Example content:
+    <pre style="margin:0;">1,2025-08-01,+100.50,user@example.com</pre>
+  </div>
+
+  <form id="form">
+    <input type="file" id="file" name="csvfile" accept=".csv" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById("form");
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const fileInput = document.getElementById("file");
+      const file = fileInput.files[0];
+
+      const res = await fetch("https://v68mn9ijie.execute-api.us-east-1.amazonaws.com/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/csv"
+        },
+        body: file,
+      });
+
+      const text = await res.text();
+      document.getElementById("result").textContent = text;
+    });
+  </script>
+</body>
+</html>
